@@ -5,12 +5,15 @@ in a grid using cellular automata algorithm based on a heuristics based probabal
 The model is based on the following assumptions:
 1. The probability of a cell catching fire is based on the number of active neighbours and their distance.
 2. The probability of a cell catching fire is based on the time to ignition of the cell.
+max_tti: maximum time to ignition of a cell, a hyperparameter to standardize the time to ignition values.
 '''
+
 import numpy as np
 import random
 import matplotlib.pyplot as plt
 
 max_tti = 500
+
 def initialize_grid(ignite_cell, shape=(15,26)):
     start_x, start_y = ignite_cell
     grid = np.zeros(shape)
@@ -56,7 +59,7 @@ def spread_probability(grid, coordinates, tti, neighbour_factors, alpha=1, beta=
     prob = 1 - np.exp(-alpha*(1 + near + far)*tti_val)
     return prob
 
-def update_grid(grid, tti, alpha=1, beta=0.5, gamma=0.1):
+def update_grid(grid, tti, alpha=1, beta=0.5, gamma=0.1, warn_threshold=0.8):
     updated = grid.copy()
     rows, cols = grid.shape
     for i in range(rows):
@@ -70,6 +73,8 @@ def update_grid(grid, tti, alpha=1, beta=0.5, gamma=0.1):
                             prob = spread_probability(grid, (child_x, child_y), tti, neighbour_factors, alpha, beta)
                             if random.random() < gamma*prob:
                                 updated[child_x][child_y] = 1
+                            elif gamma*prob >= warn_threshold:
+                                updated[child_x][child_y] = 2
     return updated
 
 def visualize_grid(grid, step):
@@ -88,7 +93,7 @@ def show_simulation(ignite_cell, shape, alpha=1, beta=0.5, gamma=0.1, steps=50):
         visualize_grid(grid, step)
     plt.show()
 
-def simulate_fire(ignite_cell, shape, alpha=1, beta=0.5, gamma=0.1, steps=50):
+def simulate_fire(ignite_cell, shape, alpha=1, beta=0.5, gamma=0.1, steps=50, warn_threshold=0.8):
     '''
     Each grid acts a key frame for the simulation
     ignite_cell: tuple of x, y coordinates of the cell to ignite
@@ -98,10 +103,12 @@ def simulate_fire(ignite_cell, shape, alpha=1, beta=0.5, gamma=0.1, steps=50):
     gamma: speed factor (resolution) for the spread of fire
     steps: number of steps to simulate/frames to generate
     Returns: an array of size steps containing the situation of gid at each step
+
+    0 - not burning, 1 - burning, 2 - warning
     '''
     key_frames = []
     grid, tti = initialize_grid(ignite_cell, shape=shape)
     for _ in range(1, steps):
-        grid = update_grid(grid, tti, alpha, beta, gamma)
+        grid = update_grid(grid, tti, alpha, beta, gamma, warn_threshold)
         key_frames.append(grid.copy())
     return key_frames
