@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*w0zg-8%@i9w0pe26nq-vuwat=l@oks*_uwg_v7rbuary&w179
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # My apps
     'api',
     'rest_framework',
+    'nav',
 ]
 
 MIDDLEWARE = [
@@ -72,18 +73,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'firefly.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'firefly_db',
-        'User': 'study',
-        'PASSWORD': 'Lili@2021',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'firefly_viw1',
+        'USER': 'firefly_viw1_user',
+        'PASSWORD': '6SoqPcoDz3dwxZCCM9IgaQ70pFjlRbDA',
+        'HOST': 'dpg-cr49bu08fa8c73djcps0-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
 }
 
