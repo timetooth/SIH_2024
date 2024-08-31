@@ -29,7 +29,7 @@ class Building(models.Model):
         blank=True,
         null=True
     )
-    fire_matrix = ArrayField(
+    fire = ArrayField(
         ArrayField(
             ArrayField(
                 models.IntegerField(), 

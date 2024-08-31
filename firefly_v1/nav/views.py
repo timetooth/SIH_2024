@@ -6,7 +6,6 @@ from . import PathFinder
 from . import models
 from . import serializer
 from . import simulate_fire
-from datetime import datetime
 
 @api_view(['GET'])
 def test(request):
@@ -54,7 +53,7 @@ def navigate(request):
             err = {'error': 'Building with the given id does not exist'}
             return Response(err, status=status.HTTP_404_NOT_FOUND)
         grid = building.floor_map[0] # 0th floor
-        fire = building.fire_matrix[0] # 0th floor
+        fire = None
         grid, fire_exits, med_kits, extinguishers = PathFinder.map_handler(grid)
         if method == 'fire':
             goal_nodes = fire_exits
@@ -119,5 +118,5 @@ def get_building(request):
     except models.Building.DoesNotExist:
         err = {'error': 'Building with the given id does not exist'}
         return Response(err, status=status.HTTP_404_NOT_FOUND)
-    serialized = serializer.BuildingSerializer(building)
-    return Response(serialized.data)
+    serializer = serializer.BuildingSerializer(building)
+    return Response(serializer.data)

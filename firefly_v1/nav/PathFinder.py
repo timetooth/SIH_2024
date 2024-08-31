@@ -19,19 +19,6 @@ def _get_path(parent, goal):
         goal = parent.get(goal, None)
     return path[::-1]
 
-def _path_shortner(path):
-    if len(path) <= 3:
-        return path
-    i = 2
-    while i < len(path)-1:
-        while i < len(path)-1 and path[i][0] == path[i-2][0] and path[i][0] == path[i-1][0]:
-            path.pop(i-1)
-            print(i,' - ',path)
-        while i < len(path)-1 and path[i][1] == path[i-2][1] and path[i][1] == path[i-1][1]:
-            path.pop(i-1)
-            print(i,' - ',path)
-        i += 1
-
 def _bfs(grid=None, goal_nodes=None, entry=(3, 25), fire=None):
     q = deque([entry])
     q.append(entry)
