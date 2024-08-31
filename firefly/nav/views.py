@@ -8,13 +8,6 @@ from . import serializer
 from . import simulate_fire
 from datetime import datetime
 
-@api_view(['GET'])
-def test(request):
-    data = {'message': 'Hello tester, This is the Navigation api testing route'}
-    print(type(request.query_params.get('arr')))
-    print(request.query_params.get('arr'))
-    return Response(data)
-
 @api_view(['GET','POST'])
 def navigate(request):
     '''
@@ -31,7 +24,6 @@ def navigate(request):
         goal_nodes = request.data.get('goal_nodes')
         entry = request.data.get('entry')
         fire = request.data.get('fire')
-        print(grid, goal_nodes, entry, fire)
         try:
             path = PathFinder.path_finder(grid=grid, goal_nodes=goal_nodes, entry=entry, fire=fire)
         except Exception as e:
@@ -121,3 +113,10 @@ def get_building(request):
         return Response(err, status=status.HTTP_404_NOT_FOUND)
     serialized = serializer.BuildingSerializer(building)
     return Response(serialized.data)
+
+from . import dummy
+
+@api_view(['GET'])
+def test(request):
+    path = dummy.path
+    return Response({'path': path})

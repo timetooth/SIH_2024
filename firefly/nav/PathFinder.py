@@ -26,11 +26,10 @@ def _path_shortner(path):
     while i < len(path)-1:
         while i < len(path)-1 and path[i][0] == path[i-2][0] and path[i][0] == path[i-1][0]:
             path.pop(i-1)
-            print(i,' - ',path)
         while i < len(path)-1 and path[i][1] == path[i-2][1] and path[i][1] == path[i-1][1]:
             path.pop(i-1)
-            print(i,' - ',path)
         i += 1
+    return path
 
 def _bfs(grid=None, goal_nodes=None, entry=(3, 25), fire=None):
     q = deque([entry])
@@ -82,7 +81,9 @@ def path_finder(grid, goal_nodes, entry, fire = None):
     if goal is None:
         return []
     
-    return _get_path(parent, goal)
+    path = _get_path(parent, goal)
+    path = _path_shortner(path)
+    return [calculate_lat_lon(coordinates, grid.shape) for coordinates in path]
 
 def map_handler(grid):
     grid = np.array(grid)
@@ -101,3 +102,27 @@ def map_handler(grid):
             elif grid[i, j] == -1:
                 grid[i, j] = 0
     return grid, fire_exits, med_kits, extinguishers
+
+
+# rectangle = {'bottom_left': (77.1846478279088,28.622942618204192),'top_left': (77.1846478279088,28.631081792092175),'top_right': (77.19316906505497,28.631081792092175),'bottom_right': (77.19316906505497,28.622942618204192)}
+
+top_left = [28.631081792092175,77.1846478279088]
+bottom_right = [28.622942618204192, 77.19316906505497]
+
+def calculate_lat_lon(coordinates, size):
+    i, j = coordinates
+    rows, cols = size
+    delta_long = (bottom_right[1] - top_left[1])/cols
+    delta_lat = (top_left[0] - bottom_right[0])/rows
+
+    lat = top_left[0] - i*delta_lat
+    lon = top_left[1] + j*delta_long
+    
+    return [lon, lat]
+
+# def calculate_lat_lon(coordinates, size):
+#     i, j = coordinates
+#     rows, cols = size
+#     lat = top_left[1] - ((top_left[1] - bottom_right[1]) * i / rows)
+#     lon = top_left[0] + ((bottom_right[0] - top_left[0]) * j / cols)
+#     return [lon, lat]
